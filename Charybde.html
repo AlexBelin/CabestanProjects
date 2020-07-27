@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/AlexBelin/CabestanProjects/master/charybdepics/hurricane.png" />
+    <meta charset="UTF-8">
+    <title>Charybde</title>
+    <style type="text/css">
+        html, body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed,
+        figure, figcaption, footer, header, hgroup,
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video, input, select, textarea {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 13px;
+            list-style-type: none;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            color: #666;
+            -webkit-text-size-adjust: 100%;
+            text-decoration: none;
+        }
+        
+        .toolbox {
+            position: fixed;
+            top: 20px;
+            right: 40px;
+            background-color: #efefef;
+            box-shadow: 1px 1px 8px #888;
+            -moz-box-shadow: 1px 1px 8px #888;
+            -webkit-box-shadow: 1px 1px 8px #888;
+            border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            width: 300px;
+            padding: 10px 20px;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+        input[type="checkbox"] + label {
+            position: relative;
+            padding: 0 0 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+        input[type="checkbox"] + label::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            background-color: #aaa;
+        }
+        input[type="checkbox"]:checked + label::before {
+            color: #fff;
+            background-color: #0089e4;
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border: none;
+            background-color: #fff;
+            padding: 10px 6px;
+            margin: 8px 0;
+            border: 1px solid #bbb;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        input[type="text"]:focus , textarea:focus {
+            border: 1px solid #006086;
+            box-shadow: 0 0 6px #006086;
+        }
+
+        textarea {
+            resize: none;
+            height: 60px;
+        }
+        
+        button {
+            width: 100%;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            background-color: #666;
+            color: #fff;
+            cursor: pointer;
+            display: block;
+            padding: 12px 14px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            border: none;
+            transition: all 0.3s;
+            font-weight: bold;
+            border: 1px solid #666;
+        }
+
+        button:hover {
+            background-color: #ccc;
+            color: #333;
+            border: 1px solid #666;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            background: url('https://raw.githubusercontent.com/AlexBelin/CabestanProjects/master/charybdepics/hurricane.png') center left no-repeat;
+            background-size: 24px;
+            padding: 4px 0 4px 28px;
+            margin: 0 auto;
+            width: 90px;
+        }
+
+        .display-link {
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbox">
+        <h1>Charybde</h1>
+        <input type="text" id="mmtro" placeholder="MMTRO" value="https://mmtro.com/c?tagid=6549673-7656665c048eac04dc64d8ff68101f13&idc=56570&email={EMAIL}&rtgeidcampaign={CODEOFFRECOMMERCIALE}&rtgeclienttype={SEGMENTMENAGE}&redir=" />
+        <input type="text" id="eulerian" placeholder="EULERIAN" value="https://mm.eulerian.net/dynclick/sofinco/?eml-publisher=sofinco&eml-name=[CampaignName]&eemail={EMAIL}&eurl=" />
+        <input type="text" id="campaign-name" placeholder="Nom de la campagne" value="" />
+        <input type="text" id="parameters" placeholder="Paramètres de lien" value="" />
+        <input type="text" id="images-location" placeholder="Emplacement des images" value="" />
+        <input type="text" id="link-unique" placeholder="lien unique" value="" />
+        <textarea id="code-html" placeholder="code HTML"></textarea>
+        <input type="checkbox" id="advanced-treatment"><label for="advanced-treatment">Injecter les variables</label>
+        <button id="button-n2">Traitement N2</button>
+        <button id="button-n0-n1">Traitement N0|N1</button>
+    </div>
+    <div id="preview"></div>
+    <script type="text/javascript">
+        var ContentHTML = null;
+        // Events listeners ============
+        document.getElementById('code-html').addEventListener('keyup', function(){
+            document.getElementById('link-unique').value = '';
+            document.getElementById('preview').innerHTML = this.value;
+            ContentHTML = document.createElement(null);
+            ContentHTML.innerHTML = this.value;
+        });
+
+        document.getElementById('button-n2').addEventListener('mouseup', function(){
+            if(document.getElementById('advanced-treatment').checked){
+                AdvancedTreatment();
+            }
+            BasicTreatment();
+            ImagesLocationsInjection();
+            ParseLinks('N2');
+            var _PixelsTrack = '<img src="https://mm.eulerian.net/dynview/sofinco/pix.gif?eml-publisher=sofinco&eml-name=' + document.getElementById("campaign-name").value + '&eemail={EMAIL}" border="0" width="1" height="1" /><img src="https://mmtro.com/i?tagid=6549673-7656665c048eac04dc64d8ff68101f13&idc=56570&email={EMAIL}&rtgeidcampaign={CODEOFFRECOMMERCIALE}&rtgeclienttype={SEGMENTMENAGE}" border="0" width="1" height="1" />';//pixels tracks creation
+            ContentHTML.innerHTML += _PixelsTrack;//pixels tracks added to contentHTML
+            Update();
+        });
+
+        document.getElementById('button-n0-n1').addEventListener('mouseup', function(){
+            if(document.getElementById('advanced-treatment').checked){
+                AdvancedTreatment();
+            }
+            BasicTreatment();
+            ImagesLocationsInjection();
+            ParseLinks('N1');
+            Update();
+        });
+
+        document.getElementById('link-unique').addEventListener('keyup', function(){
+            var DispayLink = document.createElement('div');
+            DispayLink.classList.add('display-link');
+            DispayLink.innerHTML = EncodeLink(this.value, 'N2');
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('preview').appendChild(DispayLink);
+            document.getElementById('code-html').value = ''
+        });
+        // =============================
+
+        function Update(){
+            document.getElementById('code-html').value = ContentHTML.innerHTML.toString().replace(/&amp;/g, '&');
+            document.getElementById('preview').innerHTML = ContentHTML.innerHTML;
+        }
+
+        function BasicTreatment(){
+            ContentHTML.innerHTML = ContentHTML.innerHTML.toString().replace(/&amp;/g, '&').replace(/(?<!href\=\")(https:\/\/|http:\/\/)/g, '').replace(/(?<=affiche\spas\scorrectement.+|visualisez.+|visualiser.+)(href\=\"[A-Za-z{}#\/\.\:0-9\[\]\%\$]+\")/g, 'href="{MirrorPage}"').replace(/(?<=d&eacute;sabonner.+|désabonner.+|ne\ssouhaitez\splus\srecevoir.+)(href\=\"[A-Za-z{}#\/\.\:0-9\[\]\%\$]+\")/g, 'href="{OptoutLink}"').replace(/http:\/\/sofinco1\.cab05\.net\/DS13062014094024\.cfm/g, '{OptoutLink}');
+        }
+
+        function AdvancedTreatment(){
+            ContentHTML.innerHTML = ContentHTML.innerHTML.toString().replace(/(?<part1>([C|c]lient)+(|\s|&nbsp;|\w+)+\:(|\s|&nbsp;)+(|\<[A-Za-z0-9\s\-\#\:\"\;\=\']+\>)+)(|\s|&nbsp;)(([Xx]+(\s|&nbsp;|)+)+|(\[#[A-Za-z\s]+#\]))/g, '$<part1>{CUSTOMERIDPERSO}');
+            ContentHTML.innerHTML = ContentHTML.innerHTML.toString().replace(/(?<part1>([C|c]ontrat)+(|\s|&nbsp;|\w+)+\:(|\s|&nbsp;)+(|\<[A-Za-z0-9\s\-\#\:\"\;\=\']+\>)+)(|\s|&nbsp;)(([Xx]+(\s|&nbsp;|)+)+|(\[#[A-Za-z\s]+#\]))/g, '$<part1>{NUMCONTRATPERSO1}');
+            ContentHTML.innerHTML = ContentHTML.innerHTML.toString().replace(/(?<part1>([C|c]ode)+(|\s|&nbsp;|\w+)+\:(|\s|&nbsp;)+(|\<[A-Za-z0-9\s\-\#\:\"\;\=\']+\>)+)(|\s|&nbsp;)(([Xx]+(\s|&nbsp;|)+)+|(\[#[A-Za-z\s]+#\]))/g, '$<part1>{CODEOFFRECOMMERCIALE}');
+            ContentHTML.innerHTML = ContentHTML.innerHTML.toString().replace(/(([Xx]+(|\s|&nbsp;))+|(\[#[A-Za-z\s]+#\])+|(\w+))(?<part1>(|\<(|\/)[A-Za-z0-9\s\-\#\:\"\;\=\']+\>)+(|\s|&nbsp;)(euros|&euro;|€|&#x20AC;))/g, '{MONTANTCAPITALDEVISE}$<part1>');
+            ContentHTML.innerHTML = ContentHTML.innerHTML.toString().replace(/(Cher|Chère|Ch&egrave;re).+(|\s|&nbsp;)+\,/g, '[{CONDCHERCIVNOM}],');
+            ContentHTML.innerHTML = ContentHTML.innerHTML.toString().replace(/(Monsieur|Mr|Madame|Mme|Mademoiselle|Mlle|Melle).+\,/g, '[{CONDCIVNOM}],');
+        }
+
+        function ImagesLocationsInjection(){
+            if(document.getElementById('images-location').value != ''){
+                ContentHTML.innerHTML = ContentHTML.innerHTML.toString().replace(/src\=\"[\w\/]+\//g, 'src="' + document.getElementById('images-location').value.replace('sofinco1.cab05.net', '{TRACKINGDOMAIN}'));
+            }
+        }
+
+        function ParseLinks(Level){
+            var _AllLinks = ContentHTML.querySelectorAll('a');
+            for(link in _AllLinks){
+                try {
+                    if((_AllLinks[link].getAttribute('href').indexOf('mailto:') == -1) && (_AllLinks[link].getAttribute('href').indexOf('sofinco-informations-legales') == -1) && ((_AllLinks[link].getAttribute('href').indexOf('sofinco.fr') != -1) || (_AllLinks[link].getAttribute('href').indexOf('tel:') != -1))){
+                        _AllLinks[link].setAttribute('href', EncodeLink(_AllLinks[link].getAttribute('href'), Level));
+                    }
+                } 
+                catch(error) {
+                    console.log(error);
+                }
+            }
+        }
+
+        function EncodeLink(Link, Level){
+            var EncodedLink = '';
+            if(Link.indexOf('tel:') != -1){
+                EncodedLink = Link.replace(/tel:/g, 'http://sofinco1.cab05.net/tracktel.cfm?tel=').replace(/ /g, '').replace(/\+/g, '');
+            }
+            else{
+                if(Level == 'N2'){
+                    var SubLink = '';
+                    EncodedLink += document.getElementById('mmtro').value + encodeURIComponent(document.getElementById('eulerian').value.replace('[CampaignName]', document.getElementById('campaign-name').value));
+                    if(document.getElementById('parameters').value != ''){
+                        if(Link.indexOf('?') == -1){
+                            SubLink = encodeURIComponent(encodeURIComponent(Link + '?' + document.getElementById('parameters').value));
+                        }
+                        else{
+                            SubLink = encodeURIComponent(encodeURIComponent(Link + '&' + document.getElementById('parameters').value));
+                        }
+                    }
+                    else{
+                        SubLink = encodeURIComponent(encodeURIComponent(Link));
+                    }
+                    EncodedLink += SubLink;
+                    EncodedLink = EncodedLink.replace(/&amp;/g, '&').replace('%7B', '{').replace('%7D', '}');
+                }
+                else{
+                    EncodedLink = Link;
+                }
+            }
+            return EncodedLink;
+        }
+    </script>
+</body>
+</html>
